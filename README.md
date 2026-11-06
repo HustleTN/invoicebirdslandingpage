@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InvoiceBirds Homepage
 
-## Getting Started
+Marketing homepage for InvoiceBirds, built with Next.js (App Router), TypeScript, Tailwind CSS v4 and Lucide React.
 
-First, run the development server:
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/
+├── app/                 # Routes, root layout, global styles
+│   ├── globals.css      # Design tokens (@theme) and base styles
+│   ├── layout.tsx       # Shell: skip link, header, <main>, footer
+│   └── page.tsx         # Homepage
+├── components/
+│   ├── layout/          # Site-wide chrome (header, footer)
+│   ├── sections/        # Homepage sections (add one file per section)
+│   └── ui/              # Reusable primitives (Container, …)
+├── config/site.ts       # Site name, URL, description
+└── lib/cn.ts            # Class-name merge helper
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Design tokens
 
-## Learn More
+Defined in `src/app/globals.css` and available as Tailwind utilities:
 
-To learn more about Next.js, take a look at the following resources:
+| Token            | Value     | Example utility             |
+| ---------------- | --------- | --------------------------- |
+| `navy`           | `#0A2540` | `bg-navy`, `text-navy`      |
+| `green`          | `#01B047` | `bg-green`, `text-green`    |
+| `white`          | `#FFFFFF` | `bg-white`                  |
+| `surface`        | `#F2F5F8` | `bg-surface`                |
+| `content` width  | `1280px`  | `max-w-content`             |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Breakpoints: `sm` 640px · `md` 768px · `lg` 1024px · `xl` 1280px · `2xl` 1536px.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Wrap section content in `<Container>` to get the 1280px max width and responsive gutters.
 
-## Deploy on Vercel
+## Adding the Satoshi font
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The font stack already prefers `var(--font-satoshi)`, falling back to the system sans-serif stack. Once the font files are available:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Add the `.woff2` files to `src/app/fonts/`.
+2. Load them in `src/app/layout.tsx`:
+
+   ```tsx
+   import localFont from "next/font/local";
+
+   const satoshi = localFont({
+     src: [
+       { path: "./fonts/Satoshi-Regular.woff2", weight: "400", style: "normal" },
+       { path: "./fonts/Satoshi-Medium.woff2", weight: "500", style: "normal" },
+       { path: "./fonts/Satoshi-Bold.woff2", weight: "700", style: "normal" },
+     ],
+     variable: "--font-satoshi",
+     display: "swap",
+   });
+   ```
+
+3. Add `satoshi.variable` to the `<html>` element's `className`.

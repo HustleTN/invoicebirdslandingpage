@@ -1,26 +1,294 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Design tokens
+ * Every value below generates Tailwind utilities, e.g.
+ * `bg-navy`, `text-green`, `bg-surface`, `max-w-content`, `font-sans`.
+ */
+@theme {
+  /* Brand colors */
+  --color-navy: #0a2540;
+  --color-blue: #114077;
+  --color-green: #06b047;
+  --color-white: #ffffff;
+  /* Derived tints and shades */
+  --color-surface: #f2f5f8;
+  --color-line: #e3e8ee;
+  --color-green-hover: #059a3e;
+  --color-green-soft: #e7f7ed;
+  --color-blue-soft: #eaf0f7;
+  --color-muted: #52637a;
+
+  /* Semantic aliases */
+  --color-background: var(--color-white);
+  --color-foreground: var(--color-navy);
+  --color-accent: var(--color-green);
+
+  /* Typography — Satoshi is loaded later; until then the system stack is used */
+  --font-sans:
+    var(--font-satoshi, "Satoshi"), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Motion */
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-fade-in: fade-in 400ms ease-out both;
+  --animate-slide-in: slide-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-line-flow: line-flow 2.6s linear infinite;
+  --animate-hub-breathe: hub-breathe 3.2s ease-in-out infinite;
+  --animate-dash-x: dash-x 0.7s linear infinite;
+  --animate-dash-y: dash-y 0.7s linear infinite;
+
+  /* Dashed connectors that flow: one dash period (10px) per cycle. */
+  @keyframes dash-x {
+    to {
+      background-position-x: 10px;
+    }
+  }
+  @keyframes dash-y {
+    to {
+      background-position-y: 10px;
+    }
+  }
+
+  /* Streaks on a 100px dash cycle, running away from the path's start at one speed on every line. */
+  @keyframes line-flow {
+    to {
+      stroke-dashoffset: -100;
+    }
+  }
+
+  @keyframes hub-breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(0.96);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+  }
+
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(14px);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(3px);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* Layout */
+  --container-content: 80rem; /* 1280px */
+
+  /* Responsive breakpoints (mobile-first) */
+  --breakpoint-sm: 40rem; /* 640px */
+  --breakpoint-md: 48rem; /* 768px */
+  --breakpoint-lg: 64rem; /* 1024px */
+  --breakpoint-xl: 80rem; /* 1280px */
+  --breakpoint-2xl: 96rem; /* 1536px */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+    /* Keeps anchored headings clear of the sticky header. */
+    scroll-padding-top: 6.5rem;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tight text-balance;
+  }
+
+  p {
+    @apply text-pretty;
+  }
+
+  /* Blue on light surfaces, green on navy: both clear 3:1 against their ground. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-blue;
+  }
+
+  .bg-navy :focus-visible {
+    @apply outline-green;
+  }
+
+  ::selection {
+    @apply bg-green text-white;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* The workflow connector's one-time "details carried forward" marker. */
+@keyframes connector-pulse {
+  0% {
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The payment visual's one-time "Pay invoice" press. */
+@keyframes press {
+  0%,
+  100% {
+    scale: 1;
+  }
+  45% {
+    scale: 0.95;
+  }
+}
+
+/*
+ * Customization demo canvas (1216 x 730 design px). Scaled so the whole section
+ * fits one screen: by height ((100vh - ~390px) / 730), capped by width.
+ */
+.customize-canvas {
+  zoom: 0.5;
+}
+@media (min-height: 800px) { .customize-canvas { zoom: 0.56; } }
+@media (min-height: 850px) { .customize-canvas { zoom: 0.63; } }
+@media (min-height: 900px) { .customize-canvas { zoom: 0.69; } }
+@media (min-height: 950px) { .customize-canvas { zoom: 0.76; } }
+@media (min-height: 1000px) { .customize-canvas { zoom: 0.83; } }
+@media (min-height: 1050px) { .customize-canvas { zoom: 0.9; } }
+@media (min-height: 1100px) { .customize-canvas { zoom: 0.97; } }
+/* width caps: the canvas must also fit across */
+@media (max-width: 1151px) and (min-height: 1000px) { .customize-canvas { zoom: 0.79; } }
+@media (min-width: 1152px) and (max-width: 1279px) and (min-height: 1050px) { .customize-canvas { zoom: 0.89; } }
+
+
+/*
+ * Stripe-style guides: one vertical line on each side of every section, outside the content.
+ * They sit on the edges of the 1280px page (80px in at 1440px wide); on narrower screens,
+ * halfway into the side padding, so they never touch content. Navy lines on light sections,
+ * white on navy and blue ones. Docs guide steps (deeper than main > div > section) stay plain.
+ */
+:root {
+  --guide-pad: 16px; /* the Container's side padding */
+  --guide-line: rgb(10 37 64 / 0.08);
+}
+@media (min-width: 640px) {
+  :root {
+    --guide-pad: 24px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --guide-pad: 32px;
+  }
+}
+.bg-navy,
+.bg-blue,
+body > footer,
+.grid-navy {
+  --guide-line: rgb(255 255 255 / 0.1);
+}
+main > section,
+main > div > section,
+body > footer {
+  position: relative;
+  isolation: isolate;
+}
+main > section::before,
+main > div > section::before,
+body > footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+main > section::before,
+main > div > section::before,
+body > footer::before,
+.grid-navy {
+  --guide-inset: max(var(--guide-pad) / 2, 50% - 640px);
+  background-image:
+    linear-gradient(var(--guide-line), var(--guide-line)),
+    linear-gradient(var(--guide-line), var(--guide-line));
+  background-size:
+    1px 100%,
+    1px 100%;
+  background-repeat: no-repeat;
+  background-position:
+    left var(--guide-inset) top 0,
+    right var(--guide-inset) top 0;
+}
+
+/* Under the footer: a band of faint square grid between the two guides, closed off along its top. */
+.guide-end {
+  height: 72px;
+  margin-inline: max(var(--guide-pad) / 2, 50% - 640px);
+  border-top: 1px solid var(--guide-line);
+  background-image:
+    linear-gradient(to right, var(--guide-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--guide-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  /* stretch the squares a hair so a whole number fits: no half square at the right-hand guide */
+  background-repeat: round;
+  background-position: 0 0;
+  mask-image: linear-gradient(to bottom, #000, transparent);
+}
+
+/* Under the navbar: the same faint square grid, fading downward between the two guides. */
+.guide-start {
+  position: absolute;
+  top: 0;
+  left: max(var(--guide-pad) / 2, 50% - 640px);
+  right: max(var(--guide-pad) / 2, 50% - 640px);
+  height: 96px;
+  background-image:
+    linear-gradient(to right, var(--guide-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--guide-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  /* stretch the squares a hair so a whole number fits: no half square at the right-hand guide */
+  background-repeat: round;
+  background-position: 0 0;
+  mask-image: linear-gradient(to bottom, #000, transparent);
+  pointer-events: none;
 }
