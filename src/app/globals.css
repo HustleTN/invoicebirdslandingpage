@@ -37,6 +37,78 @@
   --animate-hub-breathe: hub-breathe 3.2s ease-in-out infinite;
   --animate-dash-x: dash-x 0.7s linear infinite;
   --animate-dash-y: dash-y 0.7s linear infinite;
+  /* Popups: the dialog scaling in, its contents rising one after another, chips that pop with a bounce. */
+  --animate-pop-in: pop-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-rise: rise 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-chip-in: chip-in 600ms cubic-bezier(0.34, 1.5, 0.64, 1) both;
+  --animate-stamp: stamp 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-ping-soft: ping-soft 1.3s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-shimmer: shimmer 1.3s linear infinite;
+  --animate-wiggle: wiggle 700ms ease-in-out both;
+  --animate-grid-drift: grid-drift 16s linear infinite;
+
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(0.95);
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+  @keyframes chip-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.85);
+    }
+  }
+  @keyframes stamp {
+    from {
+      opacity: 0;
+      transform: rotate(-8deg) scale(1.7);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(-8deg) scale(1);
+    }
+  }
+  @keyframes ping-soft {
+    from {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(2.2);
+    }
+  }
+  @keyframes shimmer {
+    to {
+      background-position-x: -200%;
+    }
+  }
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20%,
+    60% {
+      transform: translateX(-3px);
+    }
+    40%,
+    80% {
+      transform: translateX(3px);
+    }
+  }
+  @keyframes grid-drift {
+    to {
+      background-position: 24px 24px;
+    }
+  }
 
   /* Dashed connectors that flow: one dash period (10px) per cycle. */
   @keyframes dash-x {
